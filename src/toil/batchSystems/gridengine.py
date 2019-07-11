@@ -80,11 +80,12 @@ class GridEngineBatchSystem(AbstractGridEngineBatchSystem):
                 args.extend(["-t", str(task)])
 
             logger.debug("Running %r", args)
+            toil = False
             process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
             for line in process.stdout:
                 if line.startswith("failed") and int(line.split()[1]) == 1:
                     return 1
-                if line.startswith("jobname") and line.split()[1] == "toil_job_" + jobID:
+                if line.startswith("jobname") and line.split()[1] == "toil_job_" + str(jobID):
                     toil = True
                 if toil and line.startswith("exit_status"):
                     logger.debug('Exit Status: %r', line.split()[1])
