@@ -68,7 +68,7 @@ class GridEngineBatchSystem(AbstractGridEngineBatchSystem):
             result = int(process.stdout.readline().decode('utf-8').strip())
             return result
 
-        def getJobExitCode(self, sgeJobID):
+        def getJobExitCode(self, sgeJobID, jobID):
             # the task is set as part of the job ID if using getBatchSystemID()
             job, task = (sgeJobID, None)
             if '.' in sgeJobID:
@@ -84,9 +84,14 @@ class GridEngineBatchSystem(AbstractGridEngineBatchSystem):
             for line in process.stdout:
                 if line.startswith("failed") and int(line.split()[1]) == 1:
                     return 1
-                elif line.startswith("exit_status"):
+                if line.startswith("jobname") and line.split()[1] == "toil_job_" + jobID:
+                    toil = True
+                if toil and line.startswith("exit_status"):
                     logger.debug('Exit Status: %r', line.split()[1])
                     return int(line.split()[1])
+                #elif line.startswith("exit_status"):
+                #    logger.debug('Exit Status: %r', line.split()[1])
+                #    return int(line.split()[1])
             return None
 
         """

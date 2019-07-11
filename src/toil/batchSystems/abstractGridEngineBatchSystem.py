@@ -184,7 +184,7 @@ class AbstractGridEngineBatchSystem(BatchSystemLocalSupport):
             while killList:
                 for jobID in list(killList):
                     batchJobID = self.getBatchSystemID(jobID)
-                    if with_retries(self.getJobExitCode, batchJobID) is not None:
+                    if with_retries(self.getJobExitCode, batchJobID, jobID) is not None:
                         logger.debug('Adding jobID %s to killedJobsQueue', jobID)
                         self.killedJobsQueue.put(jobID)
                         killList.remove(jobID)
@@ -207,7 +207,7 @@ class AbstractGridEngineBatchSystem(BatchSystemLocalSupport):
             activity = False
             for jobID in list(self.runningJobs):
                 batchJobID = self.getBatchSystemID(jobID)
-                status = with_retries(self.getJobExitCode, batchJobID)
+                status = with_retries(self.getJobExitCode, batchJobID, jobID)
                 if status is not None:
                     activity = True
                     self.updatedJobsQueue.put((jobID, status))
@@ -285,7 +285,7 @@ class AbstractGridEngineBatchSystem(BatchSystemLocalSupport):
             raise NotImplementedError()
 
         @abstractmethod
-        def getJobExitCode(self, batchJobID):
+        def getJobExitCode(self, batchJobID, jobID):
             """
             Returns job exit code. Implementation-specific; called by
             AbstractGridEngineWorker.checkOnJobs()
