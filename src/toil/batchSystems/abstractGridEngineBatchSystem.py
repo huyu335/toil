@@ -416,7 +416,7 @@ class AbstractGridEngineBatchSystem(BatchSystemLocalSupport):
 
     @classmethod
     def getWaitDuration(self):
-        return 1
+        return 15
 
     def sleepSeconds(self, sleeptime=1):
         """ Helper function to drop on all state-querying functions to avoid over-querying.
