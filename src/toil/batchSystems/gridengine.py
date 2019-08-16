@@ -111,7 +111,6 @@ class GridEngineBatchSystem(AbstractGridEngineBatchSystem):
             sgeArgs = os.getenv('TOIL_GRIDENGINE_ARGS')
             if mem is not None:
                 memStr = str(int(math.ceil(mem/(1024*math.ceil(cpu))))) + 'K'
-                reqline += ['vf=' + memStr, 'h_vmem=' + memStr]
                 # memStr = str(old_div(mem, 1024)) + 'K'
                 if not self.boss.config.manualMemArgs:
                     # for UGE instead of SGE; see #2309
