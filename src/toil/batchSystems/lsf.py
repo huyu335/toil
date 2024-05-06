@@ -94,7 +94,7 @@ class LSFBatchSystem(AbstractGridEngineBatchSystem):
             process = subprocess.Popen(args, stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
             started = 0
-            for line in process.stdout:
+            for line in process.stdout.readlines():
                 if "Done successfully" in line:
                     logger.debug("bjobs detected job completed for job: "
                                  "{}".format(job))
@@ -132,7 +132,7 @@ class LSFBatchSystem(AbstractGridEngineBatchSystem):
             args = ["bacct", "-l", str(job)]
             process = subprocess.Popen(args, stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
-            for line in process.stdout:
+            for line in process.stdout.readlines():
                 if line.find("Completed <done>") > -1:
                     logger.debug("Detected job completed for job: "
                                  "{}".format(job))
@@ -212,7 +212,7 @@ class LSFBatchSystem(AbstractGridEngineBatchSystem):
 
         maxCPU = 0
         maxMEM = MemoryString("0")
-        for line in p.stdout:
+        for line in p.stdout.readlines():
                 items = line.strip().split()
                 if len(items) < num_columns:
                         RuntimeError("lshosts output has a varying number of "
